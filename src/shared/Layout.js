@@ -42,7 +42,7 @@ function Header() {
 function Footer() {
   return (
     <div style={{ ...FooterStyles }}>
-      <span>copyright @SCC</span>
+      <span>copyright SeungTae Jeon</span>
     </div>
   );
 }
