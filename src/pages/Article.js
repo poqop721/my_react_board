@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import apiList from 'components/ApiAddress';
 import MyEditor from 'components/MyEditor';
 import MyButton from 'components/MyButton';
+import Button from '@mui/material/Button';
 
 
 function Article() {
@@ -17,7 +18,7 @@ function Article() {
   const [isUpdate, setIsUpdate] = useState(false)
   const contentRef = useRef();
   const param = useParams();
-  
+
   const [article, setArticle] = useState(datas.find((data) => data.postid === parseInt(param.name)))
   const [content, setContent] = useState(article.content)
   const [title, setTitle] = useState(article.title)
@@ -30,17 +31,17 @@ function Article() {
 
   const articleStyle = {
     padding: "30px",
-    background: "#e3e3e3",
-    borderRadius: "10px"
+    background: "white",
+    borderRadius: "10px",
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     showComments()
     const inputElements = document.querySelectorAll('.input');
     inputElements.forEach(input => {
       input.style.display = 'none';
     });
-  },[])
+  }, [])
 
 
   // useEffect(()=>{
@@ -56,7 +57,7 @@ function Article() {
       headers: {
         'Content-type': 'application/json',
         'Accept': 'application/json',
-        'authorization' : localStorage.getItem('token'),
+        'authorization': localStorage.getItem('token'),
       }
     })
       .then((Response) => {
@@ -77,7 +78,7 @@ function Article() {
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
-          'authorization' : localStorage.getItem('token'),
+          'authorization': localStorage.getItem('token'),
         }
       },
       {
@@ -114,15 +115,15 @@ function Article() {
   const postComments = () => {
     axios.post(`${apiList}/posts/${article.postid}/comments`,
       {
-        content : inpComment,
+        content: inpComment,
       },
       {
-        headers:{ 
-            'Content-type': 'application/json', 
-            'Accept': 'application/json' ,
-            'authorization' : localStorage.getItem('token'),
-              } 
-    },
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'authorization': localStorage.getItem('token'),
+        }
+      },
       {
         withCredentials: true
       }
@@ -135,38 +136,38 @@ function Article() {
   }
 
   const changeComments = () => {
-    axios.put(`${apiList}/comments/${curId}`,{
-      content : commentChanging
+    axios.put(`${apiList}/comments/${curId}`, {
+      content: commentChanging
     },
-    {
-      headers:{ 
-          'Content-type': 'application/json', 
-          'Accept': 'application/json' ,
-          'authorization' : localStorage.getItem('token'),
-            } 
-  },
-    {
-      withCredentials: true
-    }
-  ).then((response) => {
-    alert('댓글 수정 완료.')
-    setIsCommentUpdate(!isCommentUpdate)
-    showComments()
-    setcommentChanging('')
-  }).catch((res) => {
-    alert(res.response.data.message);
-  })
+      {
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'authorization': localStorage.getItem('token'),
+        }
+      },
+      {
+        withCredentials: true
+      }
+    ).then((response) => {
+      alert('댓글 수정 완료.')
+      setIsCommentUpdate(!isCommentUpdate)
+      showComments()
+      setcommentChanging('')
+    }).catch((res) => {
+      alert(res.response.data.message);
+    })
   }
 
   const deleteComments = (id) => {
     axios.delete(`${apiList}/comments/${id}`,
       {
-        headers:{ 
-            'Content-type': 'application/json', 
-            'Accept': 'application/json' ,
-            'authorization' : localStorage.getItem('token'),
-              } 
-    },
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'authorization': localStorage.getItem('token'),
+        }
+      },
       {
         withCredentials: true
       }
@@ -178,12 +179,12 @@ function Article() {
       alert(res.response.data.message);
     })
   }
-  
+
   const setIsUpdateState = () => {
     setIsUpdate(!isUpdate)
   }
 
-  function inputDisplayBlock(e, content, id){
+  function inputDisplayBlock(e, content, id) {
     setcommentChanging(content)
     setIsCommentUpdate(!isCommentUpdate)
     setCurId(id)
@@ -191,46 +192,52 @@ function Article() {
 
   const ShowArticle = () => {
     return (
-      <>
-        <div>
-          <h1>{article.title}</h1>
-          <p>생성일 : {article.createdAt}</p>
-          <p>수정일 : {article.updatedAt}</p>
-          <div style={articleStyle} dangerouslySetInnerHTML={{ __html: article.content }}></div>
+      <div className='article'>
+        <div className='article_box'>
+          <div className='article_box_box'>
+            <h1>{article.title}</h1>
+            <p>생성일 : {article.createdAt}<br></br>수정일 : {article.updatedAt}</p>
+          </div>
+          <div className='writeBox' style={articleStyle} dangerouslySetInnerHTML={{ __html: article.content }}></div>
         </div>
-        <div>
-          <p>댓글달기</p>
-          <input type='text' autoFocus value={inpComment} onChange={(e)=>setInpComments(e.target.value)}/>
-          <MyButton onClickEvent={postComments} content={"댓글 달기"} useRef={contentRef} />
+        <div className='commentBox'>
+          <div className='commentBoxBox'>
+            <h2>댓글</h2>
+            <div>
+              <h3>댓글달기</h3>
+              <input type='text' autoFocus value={inpComment} onChange={(e) => setInpComments(e.target.value)} />
+              <MyButton onClickEvent={postComments} content={"댓글 달기"} useRef={contentRef} />
+            </div>
+          <div>
+            <h3>댓글</h3>
+            {comments.map((comment) => {
+              return (
+                <div  className="commentContent" key={comment.commentId}>
+                  <div className=''>{comment.content}</div>
+                  <div><MyButton onClickEvent={(e) => inputDisplayBlock(e, comment.content, comment.commentId)} content={"수정"} /><MyButton onClickEvent={() => deleteComments(comment.commentId)} content={"삭제"} /></div>
+                </div>
+              );
+            })}<br/>
+            <input type='text' autoFocus value={commentChanging} onChange={(e) => setcommentChanging(e.target.value)} />
+            <MyButton onClickEvent={() => changeComments()} content={"수정"} />
+            <MyButton onClickEvent={() => { setIsCommentUpdate(!isCommentUpdate); setcommentChanging('') }} content={"취소"} />
+          </div>
+          </div>
         </div>
-        <div>
-          <p>댓글</p>
-          {comments.map((comment) => {
-            return (
-              <div key={comment.commentId}>
-                <div>{comment.content}</div>
-                <><MyButton  onClickEvent={(e)=>inputDisplayBlock(e, comment.content, comment.commentId)} content={"수정"}/><MyButton onClickEvent={()=>deleteComments(comment.commentId)} content={"삭제"}/></>
-              </div>
-            );
-          })}
-          <input type='text' autoFocus value={commentChanging} onChange={(e)=>setcommentChanging(e.target.value)}/>
-          <MyButton onClickEvent={()=>changeComments()} content={"수정"}/>
-          <MyButton onClickEvent={()=>{setIsCommentUpdate(!isCommentUpdate);setcommentChanging('') }} content={"취소"}/>
-        </div>
-        <MyButton onClickEvent={setIsUpdateState} content={"게시물 수정"}/>
-        <MyButton onClickEvent={deleteArticle} content={"게시물 삭제"}/>
-        
-      </>
+        <MyButton onClickEvent={setIsUpdateState} content={"게시물 수정"} />
+        <MyButton onClickEvent={deleteArticle} content={"게시물 삭제"} />
+
+      </div>
     )
   }
 
   return (<>
-    {isUpdate ? <><MyEditor title={title} onWriteTitle={(e)=>setTitle(e.target.value)} 
-      initVal={article.content} contentRef={contentRef} onWriteContent={(e)=>setContent(contentRef.current.getInstance().getHTML())} />
+    {isUpdate ? <><MyEditor title={title} onWriteTitle={(e) => setTitle(e.target.value)}
+      initVal={article.content} contentRef={contentRef} onWriteContent={(e) => setContent(contentRef.current.getInstance().getHTML())} />
 
-        <MyButton onClickEvent={setIsUpdateState} content={"취소"}/>
-        <MyButton onClickEvent={changeArticle} content={"게시물 수정"}/>
-      </> : <ShowArticle key="component2"/>}
+      <MyButton onClickEvent={setIsUpdateState} content={"취소"} />
+      <MyButton onClickEvent={changeArticle} content={"게시물 수정"} />
+    </> : <ShowArticle key="component2" />}
   </>
   );
 }

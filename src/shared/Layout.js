@@ -4,19 +4,21 @@ import React from 'react';
 
 const HeaderStyles = {
   width: '100%',
-  background: 'black',
+  background: '#575757',
   height: '50px',
   display: 'flex',
   alignItems: 'center',
   paddingLeft: '20px',
   color: 'white',
   fontWeight: '600',
+  fontSize:'1.4rem',
+  boxShadow:'1px 4px 10px 1px #868686'
 };
 const FooterStyles = {
   width: '100%',
   height: '50px',
   display: 'flex',
-  background: 'black',
+  background: '#575757',
   color: 'white',
   alignItems: 'center',
   justifyContent: 'center',
